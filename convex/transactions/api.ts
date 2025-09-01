@@ -1,4 +1,4 @@
-import { internalMutation, query } from '../_generated/server';
+import { internalMutation, mutation, query } from '../_generated/server';
 import {
   createTransactionHandler,
   createTransactionHandlerArgs,
@@ -22,17 +22,17 @@ export const getTransactionById = query({
 });
 
 // Mutations
-export const handleCreateTransaction = internalMutation({
+export const handleCreateTransaction = mutation({
   args: createTransactionHandlerArgs,
   handler: createTransactionHandler,
 });
 
-export const handleUpdateTransaction = internalMutation({
+export const handleUpdateTransaction = mutation({
   args: updateTransactionHandlerArgs,
   handler: updateTransactionHandler,
 });
 
-export const handleDeleteTransaction = internalMutation({
+export const handleDeleteTransaction = mutation({
   args: deleteTransactionHandlerArgs,
   handler: deleteTransactionHandlerHandler,
 });

@@ -7,6 +7,7 @@ import {
     IconFolder,
     IconInnerShadowTop,
     IconListDetails,
+    IconTransactionDollar,
     IconUsers,
 } from "@tabler/icons-react"
 import {
@@ -25,6 +26,7 @@ import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import Image from "next/image"
 import { useTheme } from "next-themes"
+import { FolderKanban, LayoutDashboard } from "lucide-react"
 
 const data = {
     user: {
@@ -35,28 +37,13 @@ const data = {
     navMain: [
         {
             title: "Dashboard",
-            url: "#",
-            icon: IconDashboard,
+            url: "/dashboard",
+            icon: <LayoutDashboard className="h-5 w-5" />,
         },
         {
-            title: "Lifecycle",
-            url: "#",
-            icon: IconListDetails,
-        },
-        {
-            title: "Analytics",
-            url: "#",
-            icon: IconChartBar,
-        },
-        {
-            title: "Projects",
-            url: "#",
-            icon: IconFolder,
-        },
-        {
-            title: "Team",
-            url: "#",
-            icon: IconUsers,
+            title: "Transactions",
+            url: "/transactions",
+            icon: <FolderKanban className="h-5 w-5" />,
         },
     ],
 }

@@ -6,6 +6,7 @@ export const createTransactionHandlerArgs = {
   amount: v.number(),
   category: v.string(),
   description: v.string(),
+  transactionDate: v.string(),
   fileUrl: v.string(),
   createdBy: v.string(),
 };
@@ -17,11 +18,12 @@ export const createTransactionHandler = async (
     amount: number;
     category: string;
     description: string;
+    transactionDate: string;
     fileUrl: string;
     createdBy: string;
   }
 ) => {
-  const { type, amount, category, description, fileUrl, createdBy } = args;
+  const { type, amount, category, description, transactionDate, fileUrl, createdBy } = args;
 
   try {
     console.log('Creating transaction:', { type, amount, category, description, fileUrl, createdBy });
@@ -32,6 +34,7 @@ export const createTransactionHandler = async (
       amount,
       category,
       description,
+      transactionDate,
       fileUrl,
       createdBy,
     });

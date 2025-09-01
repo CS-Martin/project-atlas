@@ -6,6 +6,7 @@ export const transactions = defineTable({
   amount: v.number(),
   category: v.string(),
   description: v.string(),
+  transactionDate: v.string(),
   fileUrl: v.string(),
   createdBy: v.string(),
 })

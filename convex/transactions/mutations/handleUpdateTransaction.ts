@@ -8,6 +8,7 @@ export const updateTransactionHandlerArgs = {
   amount: v.number(),
   category: v.string(),
   description: v.string(),
+  transactionDate: v.string(),
   fileUrl: v.string(),
 };
 
@@ -19,10 +20,11 @@ export const updateTransactionHandler = async (
     amount: number;
     category: string;
     description: string;
+    transactionDate: string;
     fileUrl: string;
   }
 ) => {
-  const { transactionId, type, amount, category, description, fileUrl } = args;
+  const { transactionId, type, amount, category, description, transactionDate, fileUrl } = args;
 
   try {
     console.log('Updating transaction:', transactionId);
@@ -43,6 +45,7 @@ export const updateTransactionHandler = async (
       amount,
       category,
       description,
+      transactionDate,
       fileUrl,
     });
 

@@ -8,6 +8,12 @@
  * @module
  */
 
+import type * as categories_api from "../categories/api.js";
+import type * as categories_index from "../categories/index.js";
+import type * as categories_mutations_handleCreateCategory from "../categories/mutations/handleCreateCategory.js";
+import type * as categories_mutations_handleDeleteCategory from "../categories/mutations/handleDeleteCategory.js";
+import type * as categories_queries_getAllCategories from "../categories/queries/getAllCategories.js";
+import type * as categories_queries_getCategoryById from "../categories/queries/getCategoryById.js";
 import type * as http from "../http.js";
 import type * as transactions_api from "../transactions/api.js";
 import type * as transactions_index from "../transactions/index.js";
@@ -38,6 +44,12 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "categories/api": typeof categories_api;
+  "categories/index": typeof categories_index;
+  "categories/mutations/handleCreateCategory": typeof categories_mutations_handleCreateCategory;
+  "categories/mutations/handleDeleteCategory": typeof categories_mutations_handleDeleteCategory;
+  "categories/queries/getAllCategories": typeof categories_queries_getAllCategories;
+  "categories/queries/getCategoryById": typeof categories_queries_getCategoryById;
   http: typeof http;
   "transactions/api": typeof transactions_api;
   "transactions/index": typeof transactions_index;
