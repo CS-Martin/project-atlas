@@ -1,33 +1,30 @@
-"use client"
+'use client'
 
-import { useState, useMemo } from "react"
-import { useQuery, useMutation } from "convex/react"
-import { TransactionAnalytics } from "./transaction-analytics"
-import { TransactionHeader } from "./transaction-header"
-import { TransactionFilters } from "./transaction-filters"
-import { TransactionsTable } from "./transactions-table"
-import { TransactionPagination } from "./transaction-pagination"
-import { TransactionModal } from "./transaction-modal"
-import { api } from "@/convex/_generated/api"
-import { Doc, Id } from "@/convex/_generated/dataModel"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { TransactionFormValues } from "@/features/validations/transaction"
+import { useState, useMemo } from 'react'
+import { useQuery, useMutation } from 'convex/react'
+import { TransactionAnalytics } from './transaction-analytics'
+import { TransactionHeader } from './transaction-header'
+import { TransactionFilters } from './transaction-filters'
+import { TransactionsTable } from './transactions-table'
+import { TransactionPagination } from './transaction-pagination'
+import { TransactionModal } from './transaction-modal'
+import { api } from '@/convex/_generated/api'
+import { Doc, Id } from '@/convex/_generated/dataModel'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
 const itemsPerPage = 10
 
 export function TransactionsPage() {
-    const user = useQuery(api.users.api.getCurrentAuthenticatedUser)
-
     const transactionsData = useQuery(api.transactions.api.getAllTransactions)
     const transactions = useMemo(() => transactionsData || [], [transactionsData])
 
-    const createTransaction = useMutation(api.transactions.api.handleCreateTransaction)
-    const updateTransaction = useMutation(api.transactions.api.handleUpdateTransaction)
     const deleteTransaction = useMutation(api.transactions.api.handleDeleteTransaction)
 
-    const [searchTerm, setSearchTerm] = useState("")
-    const [typeFilter, setTypeFilter] = useState<string>("all")
-    const [categoryFilter, setCategoryFilter] = useState<string>("all")
+    const [filters, setFilters] = useState({
+        searchTerm: '',
+        typeFilter: 'all',
+        categoryFilter: 'all',
+    })
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingTransaction, setEditingTransaction] = useState<Doc<"transactions"> | null>(null)
     const [currentPage, setCurrentPage] = useState(1)
@@ -40,15 +37,16 @@ export function TransactionsPage() {
 
     const filteredTransactions = useMemo(() => {
         return transactions.filter((transaction) => {
+            const { searchTerm, typeFilter, categoryFilter } = filters
             const matchesSearch =
                 transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 transaction.category.toLowerCase().includes(searchTerm.toLowerCase())
-            const matchesType = typeFilter === "all" || transaction.type === typeFilter
-            const matchesCategory = categoryFilter === "all" || transaction.category === categoryFilter
+            const matchesType = typeFilter === 'all' || transaction.type === typeFilter
+            const matchesCategory = categoryFilter === 'all' || transaction.category === categoryFilter
 
             return matchesSearch && matchesType && matchesCategory
         })
-    }, [transactions, searchTerm, typeFilter, categoryFilter])
+    }, [transactions, filters])
 
     const paginatedTransactions = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage
@@ -84,34 +82,6 @@ export function TransactionsPage() {
         paginatedTransactions.length > 0 && paginatedTransactions.every((t) => selectedTransactions.has(t._id))
     const isIndeterminate = selectedTransactions.size > 0 && !isAllSelected
 
-    const handleAddTransaction = async (values: TransactionFormValues) => {
-        if (!user) return
-
-        const transactionData = {
-            ...values,
-            fileUrl: "",
-            createdBy: user._id
-        }
-
-        await createTransaction(transactionData)
-
-        setIsModalOpen(false)
-    }
-
-    const handleEditTransaction = async (values: TransactionFormValues) => {
-        if (editingTransaction) {
-            const transactionData = {
-                ...values,
-                _id: editingTransaction._id,
-                fileUrl: "",
-                createdBy: editingTransaction.createdBy
-            }
-            await updateTransaction({ ...transactionData, transactionId: editingTransaction._id })
-            setEditingTransaction(null)
-            setIsModalOpen(false)
-        }
-    }
-
     const handleDeleteTransaction = async (id: string) => {
         await deleteTransaction({ transactionId: id as Id<"transactions"> })
     }
@@ -141,15 +111,7 @@ export function TransactionsPage() {
                     />
                 </CardHeader>
                 <CardContent>
-                    <TransactionFilters
-                        searchTerm={searchTerm}
-                        onSearchTermChange={setSearchTerm}
-                        typeFilter={typeFilter}
-                        onTypeFilterChange={setTypeFilter}
-                        categoryFilter={categoryFilter}
-                        onCategoryFilterChange={setCategoryFilter}
-                        allCategories={allCategories}
-                    />
+                    <TransactionFilters onFilterChange={setFilters} allCategories={allCategories} />
 
                     <TransactionsTable
                         transactions={paginatedTransactions}
@@ -176,7 +138,6 @@ export function TransactionsPage() {
                     setIsModalOpen(false)
                     setEditingTransaction(null)
                 }}
-                onSubmit={editingTransaction ? handleEditTransaction : handleAddTransaction}
                 transaction={editingTransaction}
             />
         </>
