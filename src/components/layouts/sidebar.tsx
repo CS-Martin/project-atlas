@@ -23,6 +23,8 @@ import { useAuth, useUser } from "@clerk/nextjs"
 import { NavUser } from "./nav-user"
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
+import Image from "next/image"
+import { useTheme } from "next-themes"
 
 const data = {
     user: {
@@ -61,6 +63,7 @@ const data = {
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const { theme } = useTheme()
     const user = useQuery(api.users.api.getCurrentAuthenticatedUser)
 
     if (!user) {
@@ -76,10 +79,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
-                            <a href="#">
-                                <IconInnerShadowTop className="!size-5" />
-                                <span className="text-base font-semibold">Acme Inc.</span>
-                            </a>
+                            {theme === "dark" ? (
+                                <Image src={'/sophons-logo-light.png'} alt="Sophons logo" height={500} width={500} className="!h-12 !w-auto" />
+                            ) : (
+                                <Image src={'/sophons-logo-dark.png'} alt="Sophons logo" height={500} width={500} className="!h-12 !w-auto" />
+                            )}
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

@@ -8,8 +8,8 @@ interface ServicesLayoutProps {
     children: ReactNode;
 }
 
-export default function AuthenticatedLayout({ children }: ServicesLayoutProps) {
-    requireAuth()
+export default async function AuthenticatedLayout({ children }: ServicesLayoutProps) {
+    await requireAuth()
 
     return (
         <SidebarProvider
