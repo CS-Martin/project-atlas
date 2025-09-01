@@ -32,6 +32,8 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { NavMain } from "./nav-main"
+import { useUser } from "@clerk/nextjs"
+import { NavUser } from "./nav-user"
 
 const data = {
     user: {
@@ -151,6 +153,9 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    // const { user } = useUser()
+    // console.log(user)
+
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -174,7 +179,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
             </SidebarContent>
             <SidebarFooter>
-                {/* <NavUser user={data.user} /> */}
+                {/* <NavUser user={user} /> */}
             </SidebarFooter>
         </Sidebar>
     )
