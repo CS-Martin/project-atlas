@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "concurrently \"next dev --turbopack\" \"convex dev\"",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint"
@@ -11,9 +11,11 @@
   "dependencies": {
     "@clerk/nextjs": "^6.31.6",
     "convex": "^1.26.2",
+    "convex-helpers": "^0.1.104",
     "next": "15.5.2",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "svix": "^1.75.0"
   },
   "devDependencies": {
     "typescript": "^5",
@@ -24,6 +26,7 @@
     "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
+    "concurrently": "^9.2.1",
     "@eslint/eslintrc": "^3"
   }
 }
