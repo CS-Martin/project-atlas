@@ -23,8 +23,6 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { Doc } from "@/convex/_generated/dataModel"
 import { SignOutButton } from "@clerk/nextjs"
-import { LogOut } from "lucide-react"
-import { Button } from "../ui/button"
 
 export function NavUser({
     user,
@@ -42,7 +40,7 @@ export function NavUser({
                             size="lg"
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
-                            <Avatar className="h-8 w-8 rounded-lg grayscale">
+                            <Avatar className="h-8 w-8 rounded-md">
                                 <AvatarImage src={user.imageUrl} alt={user.firstName + ' ' + user.lastName} />
                                 <AvatarFallback className="rounded-lg">{user.firstName[0] + user.lastName[0]}</AvatarFallback>
                             </Avatar>
@@ -91,10 +89,16 @@ export function NavUser({
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
+                        <DropdownMenuGroup className="w-full">
                             <DropdownMenuItem className="w-full cursor-pointer">
-                                <IconLogout />
-                                <SignOutButton />
+                                <span className="w-full">
+                                    <SignOutButton>
+                                        <button className="w-full flex items-center gap-2">
+                                            <IconLogout />
+                                            Sign out
+                                        </button>
+                                    </SignOutButton>
+                                </span>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                     </DropdownMenuContent>
