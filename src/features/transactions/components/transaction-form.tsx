@@ -12,25 +12,43 @@ import { z } from "zod"
 import { useQuery, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { Label } from "@/components/ui/label"
+import { DialogFooter } from "@/components/ui/dialog"
 
 const formSchema = z.object({
     type: z.enum(["income", "expense"]),
-    amount: z.number().positive({ message: "Amount must be greater than 0" }),
+    amount: z
+        .number("Amount is required")
+        .positive("Amount must be greater than 0")
+        .max(1_000_000_000, "Amount is too large") // cap at 1B
+        .refine((val) => /^\d{1,9}(\.\d{1,2})?$/.test(val.toString()), "Invalid amount format"),
     category: z.string().min(1, "Category is required"),
-    description: z.string().min(1, "Description is required"),
-    transactionDate: z.string().min(1, "Date is required"),
+    description: z
+        .string()
+        .min(1, "Description is required")
+        .max(500, "Description cannot exceed 500 characters"),
+    transactionDate: z
+        .string()
+        .min(1, "Date is required")
+        .refine((val) => {
+            const inputDate = new Date(val)
+            const today = new Date()
+            today.setHours(0, 0, 0, 0) // normalize
+            return inputDate <= today
+        }, "Date cannot be in the future"),
     fileUrl: z.string().optional(),
     createdBy: z.string().optional(),
 })
+
 
 export type TransactionFormValues = z.infer<typeof formSchema>
 
 interface TransactionFormProps {
     onSubmit: SubmitHandler<TransactionFormValues>
     transaction: Doc<"transactions"> | null
+    onClose: () => void
 }
 
-export function TransactionForm({ onSubmit, transaction }: TransactionFormProps) {
+export function TransactionForm({ onSubmit, transaction, onClose }: TransactionFormProps) {
     const categories = useQuery(api.categories.api.getAllCategories) || []
     const createCategory = useMutation(api.categories.api.handleCreateCategory)
     const user = useQuery(api.users.api.getCurrentAuthenticatedUser)
@@ -42,7 +60,7 @@ export function TransactionForm({ onSubmit, transaction }: TransactionFormProps)
             amount: transaction?.amount ?? 0,
             category: transaction?.category ?? "",
             description: transaction?.description ?? "",
-            transactionDate: transaction?.transactionDate,
+            transactionDate: transaction?.transactionDate ?? new Date().toISOString().split("T")[0], // 👈 default today
             fileUrl: transaction?.fileUrl ?? "",
             createdBy: transaction?.createdBy ?? "",
         },
@@ -81,7 +99,7 @@ export function TransactionForm({ onSubmit, transaction }: TransactionFormProps)
 
                 {/* Transaction Date */}
                 <div className="w-1/2">
-                    <Label className="block mb-1">Date</Label>
+                    <Label className="block mb-1">Transaction Date</Label>
                     <Input {...form.register("transactionDate")} type="date" />
                     {form.formState.errors.transactionDate && (
                         <p className="text-red-600 text-sm mt-1">{form.formState.errors.transactionDate.message}</p>
@@ -92,15 +110,22 @@ export function TransactionForm({ onSubmit, transaction }: TransactionFormProps)
             {/* Amount */}
             <div>
                 <Label className="block mb-1">Amount</Label>
-                <Input
-                    {...form.register("amount", { valueAsNumber: true })}
-                    placeholder="Amount"
-                    type="number"
-                />
+                <div className="relative">
+                    <span className="absolute inset-y-0 font-medium left-0 px-4 flex items-center border-r border-gray-300">$</span>
+                    <Input
+                        {...form.register("amount", { valueAsNumber: true })}
+                        placeholder="0.00"
+                        type="number"
+                        className="pl-13"
+                    />
+                </div>
                 {form.formState.errors.amount && (
-                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.amount.message}</p>
+                    <p className="text-red-600 text-sm mt-1">
+                        {form.formState.errors.amount.message}
+                    </p>
                 )}
             </div>
+
 
             {/* Category */}
             <div>
@@ -129,9 +154,12 @@ export function TransactionForm({ onSubmit, transaction }: TransactionFormProps)
                 )}
             </div>
 
+            {/* TODO: Add file upload */}
 
-
-            <Button type="submit">{transaction ? "Save Changes" : "Create Transaction"}</Button>
+            <DialogFooter>
+                <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+                <Button type="submit">{transaction ? "Save Changes" : "Create Transaction"}</Button>
+            </DialogFooter>
         </form>
     )
 }

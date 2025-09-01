@@ -1,13 +1,14 @@
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { TransactionForm } from "./transaction-form"
 import { Doc } from "@/convex/_generated/dataModel"
+import { TransactionFormValues } from "./transaction-form"
 
 interface TransactionModalProps {
     isOpen: boolean
     onClose: () => void
-    onSubmit: (values: any) => void
+    onSubmit: (values: TransactionFormValues) => void
     transaction: Doc<"transactions"> | null
 }
 
@@ -17,8 +18,13 @@ export function TransactionModal({ isOpen, onClose, onSubmit, transaction }: Tra
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{transaction ? "Edit Transaction" : "Add Transaction"}</DialogTitle>
+                    <DialogDescription>
+                        {transaction
+                            ? "Make changes to your transaction details."
+                            : "Create a new transaction record."}
+                    </DialogDescription>
                 </DialogHeader>
-                <TransactionForm onSubmit={onSubmit} transaction={transaction} />
+                <TransactionForm onClose={onClose} onSubmit={onSubmit} transaction={transaction} />
             </DialogContent>
         </Dialog>
     )
