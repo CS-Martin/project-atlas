@@ -1,0 +1,55 @@
+import { Id } from '@/convex/_generated/dataModel';
+import { MutationCtx } from '@/convex/_generated/server';
+import { v } from 'convex/values';
+
+export const updateTransactionHandlerArgs = {
+  transactionId: v.id('transactions'),
+  type: v.union(v.literal('income'), v.literal('expense')),
+  amount: v.number(),
+  category: v.string(),
+  description: v.string(),
+  fileUrl: v.string(),
+};
+
+export const updateTransactionHandler = async (
+  ctx: MutationCtx,
+  args: {
+    transactionId: Id<'transactions'>;
+    type: 'income' | 'expense';
+    amount: number;
+    category: string;
+    description: string;
+    fileUrl: string;
+  }
+) => {
+  const { transactionId, type, amount, category, description, fileUrl } = args;
+
+  try {
+    console.log('Updating transaction:', transactionId);
+
+    // Find existing transaction
+    const existingTransaction = await ctx.db
+      .query('transactions')
+      .withIndex('by_id', (q) => q.eq('_id', transactionId))
+      .first();
+
+    if (!existingTransaction) {
+      console.log('Transaction not found, skipping update');
+      return;
+    }
+
+    await ctx.db.patch(existingTransaction._id, {
+      type,
+      amount,
+      category,
+      description,
+      fileUrl,
+    });
+
+    console.log('Transaction updated successfully:', transactionId);
+    return transactionId;
+  } catch (error) {
+    console.error('Error updating transaction:', error);
+    throw new Error(`Failed to update transaction: ${error}`);
+  }
+};

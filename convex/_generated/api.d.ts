@@ -9,6 +9,13 @@
  */
 
 import type * as http from "../http.js";
+import type * as transactions_api from "../transactions/api.js";
+import type * as transactions_index from "../transactions/index.js";
+import type * as transactions_mutations_handleCreateTransaction from "../transactions/mutations/handleCreateTransaction.js";
+import type * as transactions_mutations_handleDeleteTransaction from "../transactions/mutations/handleDeleteTransaction.js";
+import type * as transactions_mutations_handleUpdateTransaction from "../transactions/mutations/handleUpdateTransaction.js";
+import type * as transactions_queries_getAllTransactions from "../transactions/queries/getAllTransactions.js";
+import type * as transactions_queries_getTransactionById from "../transactions/queries/getTransactionById.js";
 import type * as users_api from "../users/api.js";
 import type * as users_index from "../users/index.js";
 import type * as users_mutations_handleUserCreated from "../users/mutations/handleUserCreated.js";
@@ -32,6 +39,13 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   http: typeof http;
+  "transactions/api": typeof transactions_api;
+  "transactions/index": typeof transactions_index;
+  "transactions/mutations/handleCreateTransaction": typeof transactions_mutations_handleCreateTransaction;
+  "transactions/mutations/handleDeleteTransaction": typeof transactions_mutations_handleDeleteTransaction;
+  "transactions/mutations/handleUpdateTransaction": typeof transactions_mutations_handleUpdateTransaction;
+  "transactions/queries/getAllTransactions": typeof transactions_queries_getAllTransactions;
+  "transactions/queries/getTransactionById": typeof transactions_queries_getTransactionById;
   "users/api": typeof users_api;
   "users/index": typeof users_index;
   "users/mutations/handleUserCreated": typeof users_mutations_handleUserCreated;
