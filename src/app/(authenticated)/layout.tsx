@@ -1,6 +1,7 @@
 import { AppSidebar } from '@/components/layouts/sidebar';
 import { SiteHeader } from '@/components/layouts/site-header';
-import { Sidebar, SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { requireAuth } from '@/lib/auth/require-auth';
 import { ReactNode } from 'react';
 
 interface ServicesLayoutProps {
@@ -8,6 +9,8 @@ interface ServicesLayoutProps {
 }
 
 export default function AuthenticatedLayout({ children }: ServicesLayoutProps) {
+    requireAuth()
+
     return (
         <SidebarProvider
             style={
