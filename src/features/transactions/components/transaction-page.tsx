@@ -11,7 +11,7 @@ import { TransactionModal } from "./transaction-modal"
 import { api } from "@/convex/_generated/api"
 import { Doc, Id } from "@/convex/_generated/dataModel"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { TransactionFormValues } from "./transaction-form"
+import { TransactionFormValues } from "@/features/validations/transaction"
 
 const itemsPerPage = 10
 
@@ -86,14 +86,15 @@ export function TransactionsPage() {
 
     const handleAddTransaction = async (values: TransactionFormValues) => {
         if (!user) return
+
         const transactionData = {
             ...values,
-            _id: "" as Id<"transactions">,
-            _creationTime: Date.now(),
             fileUrl: "",
             createdBy: user._id
         }
+
         await createTransaction(transactionData)
+
         setIsModalOpen(false)
     }
 

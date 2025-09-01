@@ -1,9 +1,9 @@
 "use client"
 
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { TransactionForm } from "./transaction-form"
 import { Doc } from "@/convex/_generated/dataModel"
-import { TransactionFormValues } from "./transaction-form"
+import { TransactionFormValues } from "@/features/validations/transaction"
 
 interface TransactionModalProps {
     isOpen: boolean

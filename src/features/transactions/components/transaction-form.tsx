@@ -13,34 +13,7 @@ import { useQuery, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { Label } from "@/components/ui/label"
 import { DialogFooter } from "@/components/ui/dialog"
-
-const formSchema = z.object({
-    type: z.enum(["income", "expense"]),
-    amount: z
-        .number("Amount is required")
-        .positive("Amount must be greater than 0")
-        .max(1_000_000_000, "Amount is too large") // cap at 1B
-        .refine((val) => /^\d{1,9}(\.\d{1,2})?$/.test(val.toString()), "Invalid amount format"),
-    category: z.string().min(1, "Category is required"),
-    description: z
-        .string()
-        .min(1, "Description is required")
-        .max(500, "Description cannot exceed 500 characters"),
-    transactionDate: z
-        .string()
-        .min(1, "Date is required")
-        .refine((val) => {
-            const inputDate = new Date(val)
-            const today = new Date()
-            today.setHours(0, 0, 0, 0) // normalize
-            return inputDate <= today
-        }, "Date cannot be in the future"),
-    fileUrl: z.string().optional(),
-    createdBy: z.string().optional(),
-})
-
-
-export type TransactionFormValues = z.infer<typeof formSchema>
+import { transactionFormSchema, TransactionFormValues } from "@/features/validations/transaction"
 
 interface TransactionFormProps {
     onSubmit: SubmitHandler<TransactionFormValues>
@@ -54,7 +27,7 @@ export function TransactionForm({ onSubmit, transaction, onClose }: TransactionF
     const user = useQuery(api.users.api.getCurrentAuthenticatedUser)
 
     const form = useForm<TransactionFormValues>({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(transactionFormSchema),
         defaultValues: {
             type: transaction?.type ?? "income",
             amount: transaction?.amount ?? 0,
