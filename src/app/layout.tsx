@@ -32,7 +32,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ClerkProvider dynamic signUpUrl="/sign-up" signInUrl="/sign-in" signUpFallbackRedirectUrl="/dashboard" signInFallbackRedirectUrl="/dashboard">
+        <ClerkProvider
+          signInUrl={`/sign-in`}
+          signUpUrl={`/sign-up`}
+          signInFallbackRedirectUrl={`/dashboard`}
+          signUpFallbackRedirectUrl={`/dashboard`}>
           <ConvexClientProvider>
             <ThemeProvider
               attribute="class"
