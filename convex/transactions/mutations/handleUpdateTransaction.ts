@@ -52,10 +52,12 @@ export const updateTransactionHandler = async (
       transactionDate,
       fileUrl,
       editedBy,
+      createdBy: existingTransaction.createdBy,
       updatedAt,
     });
 
     console.log('Transaction updated successfully:', transactionId);
+
     return transactionId;
   } catch (error) {
     console.error('Error updating transaction:', error);

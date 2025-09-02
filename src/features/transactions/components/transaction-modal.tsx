@@ -49,17 +49,35 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
     }
 
     const handleEditTransaction = async (values: TransactionFormValues) => {
-        if (transaction) {
-            const transactionData = {
-                ...values,
-                _id: transaction._id,
-                fileUrl: transaction.fileUrl || "",
-                editedBy: user?._id ?? "",
-                updatedAt: new Date().toISOString()
-            }
+        try {
+            start()
+            if (!user) return
 
-            await updateTransaction({ ...transactionData, transactionId: transaction._id })
-            onClose()
+            if (transaction) {
+                const transactionData = {
+                    type: values.type,
+                    amount: values.amount,
+                    category: values.category,
+                    description: values.description,
+                    transactionDate: values.transactionDate,
+                    fileUrl: transaction.fileUrl || "",
+                    editedBy: user?._id ?? "",
+                    updatedAt: new Date().toISOString()
+                }
+
+                const updatedTransactionId = await updateTransaction({ ...transactionData, transactionId: transaction._id })
+
+                if (updatedTransactionId) {
+                    onClose()
+                    toast.success("Transaction updated successfully")
+                }
+            }
+        } catch (error) {
+            console.error("Error updating transaction:", error)
+
+            toast.error("Failed to update transaction")
+        } finally {
+            stop()
         }
     }
 

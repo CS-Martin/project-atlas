@@ -6,8 +6,8 @@ import React from 'react';
 export const LoadingProgressProvider = ({ children }: { children: React.ReactNode }) => {
     return (
         <ProgressProvider
-            height='4px'
-            color='#e9b815'
+            height='5px'
+            color='#9811fb'
             options={{ showSpinner: true }}>
             {children}
         </ProgressProvider>
