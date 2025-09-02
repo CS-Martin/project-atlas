@@ -35,7 +35,7 @@ export function TransactionsPage() {
 
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
-            setSelectedTransactions(new Set(paginatedTransactions.map((t) => t._id)))
+            setSelectedTransactions(new Set(paginatedTransactions.map((t: Doc<'transactions'>) => t._id)))
         } else {
             setSelectedTransactions(new Set())
         }
@@ -74,10 +74,10 @@ export function TransactionsPage() {
     }
 
     const isAllSelected =
-        paginatedTransactions.length > 0 && paginatedTransactions.every((t) => selectedTransactions.has(t._id))
+        paginatedTransactions.length > 0 && paginatedTransactions.every((t: Doc<'transactions'>) => selectedTransactions.has(t._id))
     const isIndeterminate = selectedTransactions.size > 0 && !isAllSelected
 
-    const openEditModal = (transaction: Doc<"transactions">) => {
+    const openEditModal = (transaction: Doc<'transactions'>) => {
         setEditingTransaction(transaction)
         setIsModalOpen(true)
     }
