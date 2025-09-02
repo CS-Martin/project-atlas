@@ -27,7 +27,11 @@ export function AnalyticsGrid() {
     );
   }
 
-  const { income, expense, netBalance, topExpenseCategory } = dashboardData;
+  const { income, expense, netBalance, expenseByCategory } = dashboardData;
+
+  const topExpenseCategory = Object.entries(expenseByCategory).sort(
+    (a, b) => b[1] - a[1]
+  )[0]?.[0] || 'N/A';
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

@@ -66,5 +66,6 @@ export const getDashboardDataHandler = async (ctx: QueryCtx, args: Infer<typeof 
     netBalance,
     expenseByCategory,
     chartData: Object.values(chartData).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+    transactions,
   };
 };
