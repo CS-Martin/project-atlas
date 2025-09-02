@@ -68,7 +68,7 @@ export function TransactionAnalytics({ transactions }: TransactionAnalyticsProps
                         </CardHeader>
                         <CardContent>
                             <NumberTicker
-                                value={card.value}
+                                value={card.value || 0}
                                 className={`text-2xl font-bold ${card.color}`}
                                 prefix={card.title !== "Total Transactions" ? card.sign + "$" : ""}
                             />

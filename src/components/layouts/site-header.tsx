@@ -7,6 +7,7 @@ import gsap from "gsap"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { AnimatedThemeToggler } from "../magicui/animated-theme-toggler"
 
 export function SiteHeader() {
     const { theme, setTheme } = useTheme()
@@ -64,21 +65,7 @@ export function SiteHeader() {
                 <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4" />
                 <h1 className="text-base font-medium">Dashboard</h1>
                 <div className="ml-auto flex items-center gap-2">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={toggleTheme}
-                        className="hidden sm:flex relative"
-                        aria-label="Toggle theme"
-                    >
-                        <span ref={iconRef} className="flex items-center">
-                            {theme === "light" ? (
-                                <Sun className="h-4 w-4" />
-                            ) : (
-                                <Moon className="h-4 w-4" />
-                            )}
-                        </span>
-                    </Button>
+                    <AnimatedThemeToggler />
                 </div>
             </div>
         </header>

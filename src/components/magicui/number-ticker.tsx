@@ -31,6 +31,17 @@ export function NumberTicker({
     });
     const isInView = useInView(ref, { once: true, margin: '0px' });
 
+    // ✅ Ensure initial render (handles 0 or same values properly)
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.textContent = `${prefix}${Intl.NumberFormat('en-US', {
+                minimumFractionDigits: decimalPlaces,
+                maximumFractionDigits: decimalPlaces,
+            }).format(value)}`;
+        }
+    }, [value, prefix, decimalPlaces]);
+
+    // Animate when value changes and is in view
     useEffect(() => {
         if (isInView) {
             const timer = setTimeout(() => {
@@ -40,18 +51,18 @@ export function NumberTicker({
         }
     }, [motionValue, isInView, delay, value, direction, startValue]);
 
-    useEffect(
-        () =>
-            springValue.on('change', (latest) => {
-                if (ref.current) {
-                    ref.current.textContent = `${prefix}${Intl.NumberFormat('en-US', {
-                        minimumFractionDigits: decimalPlaces,
-                        maximumFractionDigits: decimalPlaces,
-                    }).format(Number(latest.toFixed(decimalPlaces)))}`;
-                }
-            }),
-        [springValue, decimalPlaces, prefix],
-    );
+    // Sync spring value to DOM
+    useEffect(() => {
+        const unsubscribe = springValue.on('change', (latest) => {
+            if (ref.current) {
+                ref.current.textContent = `${prefix}${Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: decimalPlaces,
+                    maximumFractionDigits: decimalPlaces,
+                }).format(Number(latest.toFixed(decimalPlaces)))}`;
+            }
+        });
+        return unsubscribe;
+    }, [springValue, decimalPlaces, prefix]);
 
     return (
         <span
