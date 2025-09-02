@@ -17,6 +17,7 @@ import { api } from "@/convex/_generated/api"
 import Image from "next/image"
 import { useTheme } from "next-themes"
 import { FolderKanban, LayoutDashboard } from "lucide-react"
+import { Label } from "../ui/label"
 
 const data = {
     user: {
@@ -66,6 +67,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
+                <Label className="text-gray-500 text-xs px-2">Main</Label>
                 <NavMain items={data.navMain} />
                 {/* <NavDocuments items={data.documents} />
                 <NavSecondary items={data.navSecondary} className="mt-auto" /> */}

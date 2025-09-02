@@ -1,39 +1,38 @@
-"use client"
+'use client'
 
-import {
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from '@/components/ui/sidebar'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
-export function NavMain({
-    items,
-}: {
-    items: {
-        title: string
-        url: string
-        icon?: React.ReactNode
-    }[]
-}) {
+interface NavItem {
+    title: string
+    url: string
+    icon: React.ReactNode
+}
+
+interface NavMainProps {
+    items: NavItem[]
+}
+
+export function NavMain({ items }: NavMainProps) {
+    const pathname = usePathname()
+
     return (
-        <SidebarGroup>
-            <SidebarGroupContent className="flex flex-col gap-2">
-                <SidebarMenu>
-                    {items.map((item) => (
-                        <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild tooltip={item.title}>
-                                <Link href={item.url}>
-                                    {item.icon && item.icon}
-                                    <span>{item.title}</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    ))}
-                </SidebarMenu>
-            </SidebarGroupContent>
-        </SidebarGroup>
+        <nav className="flex flex-col space-y-1">
+            {items.map((item) => {
+                const isActive = pathname === item.url
+                return (
+                    <Link
+                        key={item.title}
+                        href={item.url}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
+              ${isActive ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'}
+            `}
+                    >
+                        {item.icon}
+                        {item.title}
+                    </Link>
+                )
+            })}
+        </nav>
     )
 }

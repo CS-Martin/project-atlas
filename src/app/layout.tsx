@@ -40,7 +40,7 @@ export default function RootLayout({
           <ConvexClientProvider>
             <ThemeProvider
               attribute="class"
-              defaultTheme="light"
+              defaultTheme="dark"
               enableSystem>
               <LoadingProgressProvider>
                 {children}
