@@ -1,22 +1,25 @@
 "use client";
 
-import { Moon, Sun, SunDim } from "lucide-react";
-import { useState, useRef } from "react";
+import { Moon, Sun } from "lucide-react";
+import { useRef } from "react";
 import { flushSync } from "react-dom";
 import gsap from "gsap";
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 type Props = {
   className?: string;
 };
 
 export const AnimatedThemeToggler = ({ className }: Props) => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const { theme, setTheme } = useTheme();
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const iconRef = useRef<HTMLSpanElement | null>(null);
 
   const changeTheme = async () => {
     if (!buttonRef.current || !iconRef.current) return;
+
+    const nextTheme = theme === "light" ? "dark" : "light";
 
     // GSAP animate icon out
     await new Promise<void>((resolve) => {
@@ -33,11 +36,10 @@ export const AnimatedThemeToggler = ({ className }: Props) => {
       );
     });
 
-    // Trigger view transition + actual theme change
+    // Trigger view transition + theme change via next-themes
     await document.startViewTransition(() => {
       flushSync(() => {
-        const dark = document.documentElement.classList.toggle("dark");
-        setIsDarkMode(dark);
+        setTheme(nextTheme);
       });
     }).ready;
 
@@ -75,8 +77,15 @@ export const AnimatedThemeToggler = ({ className }: Props) => {
 
   return (
     <button ref={buttonRef} onClick={changeTheme} className={cn(className)}>
-      <span ref={iconRef} className="inline-block border p-1.5 rounded-md cursor-pointer border-neutral-200">
-        {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      <span
+        ref={iconRef}
+        className="inline-block border p-1.5 rounded-md cursor-pointer border-neutral-200"
+      >
+        {theme === "dark" ? (
+          <Sun className="w-5 h-5" />
+        ) : (
+          <Moon className="w-5 h-5" />
+        )}
       </span>
     </button>
   );

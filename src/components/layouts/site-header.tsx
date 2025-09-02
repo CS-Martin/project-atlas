@@ -10,40 +10,11 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { AnimatedThemeToggler } from "../magicui/animated-theme-toggler"
 
 export function SiteHeader() {
-    const { theme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
-    const iconRef = useRef<HTMLSpanElement | null>(null)
 
     useEffect(() => {
         setMounted(true)
     }, [])
-
-    const toggleTheme = () => {
-        const nextTheme = theme === "light" ? "dark" : "light"
-
-        if (iconRef.current) {
-            gsap.fromTo(
-                iconRef.current,
-                { rotate: 0, scale: 1 },
-                {
-                    rotate: 180,
-                    scale: 0,
-                    duration: 0.3,
-                    ease: "power2.inOut",
-                    onComplete: () => {
-                        setTheme(nextTheme)
-                        gsap.fromTo(
-                            iconRef.current,
-                            { rotate: -180, scale: 0 },
-                            { rotate: 0, scale: 1, duration: 0.3, ease: "power2.inOut" }
-                        )
-                    },
-                }
-            )
-        } else {
-            setTheme(nextTheme)
-        }
-    }
 
     // Don't render the theme toggle until we're on the client
     if (!mounted) {
