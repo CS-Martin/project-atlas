@@ -13,7 +13,7 @@ import { useQuery, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { Label } from "@/components/ui/label"
 import { DialogFooter } from "@/components/ui/dialog"
-import { transactionFormSchema, TransactionFormValues } from "@/features/validations/transaction"
+import { transactionFormSchema, TransactionFormValues } from "@/features/transactions/validations/transaction"
 
 interface TransactionFormProps {
     onSubmit: SubmitHandler<TransactionFormValues>

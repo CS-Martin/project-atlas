@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { TransactionForm } from "./transaction-form"
 import { api } from "@/convex/_generated/api"
 import { Doc, Id } from "@/convex/_generated/dataModel"
-import { TransactionFormValues } from "@/features/validations/transaction"
+import { TransactionFormValues } from "@/features/transactions/validations/transaction"
 import { useProgress } from "@bprogress/next"
 import { toast } from "sonner"
 
