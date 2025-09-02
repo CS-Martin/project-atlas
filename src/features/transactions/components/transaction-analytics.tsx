@@ -1,8 +1,10 @@
 "use client"
 
-import { formatCurrency } from "@/lib/finance-utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Doc } from "@/convex/_generated/dataModel"
+import { motion } from "framer-motion"
+import { ArrowDownCircle, ArrowUpCircle, Wallet, Receipt } from "lucide-react"
+import { NumberTicker } from "@/components/magicui/number-ticker"
 
 interface TransactionAnalyticsProps {
     transactions: Doc<"transactions">[]
@@ -17,42 +19,64 @@ export function TransactionAnalytics({ transactions }: TransactionAnalyticsProps
         .filter((t) => t.type === "expense")
         .reduce((acc, t) => acc + t.amount, 0)
 
+    const netFlow = totalIncome - totalExpenses
+
+    const cards = [
+        {
+            title: "Total Income",
+            value: totalIncome,
+            sign: "+",
+            color: "text-green-500",
+            icon: <ArrowUpCircle className="h-6 w-6 text-green-500" />,
+        },
+        {
+            title: "Total Expenses",
+            value: totalExpenses,
+            sign: "-",
+            color: "text-red-500",
+            icon: <ArrowDownCircle className="h-6 w-6 text-red-500" />,
+        },
+        {
+            title: "Net Flow",
+            value: Math.abs(netFlow),
+            sign: netFlow >= 0 ? "+" : "-",
+            color: netFlow >= 0 ? "text-green-500" : "text-red-500",
+            icon: <Wallet className={`h-6 w-6 ${netFlow >= 0 ? "text-green-500" : "text-red-500"}`} />,
+        },
+        {
+            title: "Total Transactions",
+            value: transactions.length,
+            sign: "",
+            color: "text-black",
+            icon: <Receipt className="h-6 w-6 text-blue-500" />,
+        },
+    ]
+
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Income</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold text-chart-3">+{formatCurrency(totalIncome)}</div>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold text-chart-5">-{formatCurrency(totalExpenses)}</div>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Net Flow</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className={`text-2xl font-bold ${(totalIncome - totalExpenses) >= 0 ? 'text-chart-3' : 'text-chart-5'}`}>
-                        {(totalIncome - totalExpenses) >= 0 ? "+" : "-"}{formatCurrency(Math.abs(totalIncome - totalExpenses))}
-                    </div>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Transactions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{transactions.length}</div>
-                </CardContent>
-            </Card>
+            {cards.map((card, idx) => (
+                <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                >
+                    <Card className="hover:shadow-lg transition-shadow duration-300">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+                            {card.icon}
+                        </CardHeader>
+                        <CardContent>
+                            <NumberTicker
+                                value={card.value}
+                                className={`text-2xl font-bold ${card.color}`}
+                                prefix={card.title !== "Total Transactions" ? card.sign + "$" : ""}
+                            />
+
+                        </CardContent>
+                    </Card>
+                </motion.div>
+            ))}
         </div>
     )
 }

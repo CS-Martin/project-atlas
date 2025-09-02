@@ -10,6 +10,7 @@ import { TransactionsTable } from './transactions-table'
 import { TransactionPagination } from './transaction-pagination'
 import { TransactionModal } from './transaction-modal'
 import { ConfirmationModal } from '@/components/ui/confirmation-modal'
+import { TransactionsPageSkeleton } from './skeletons'
 import { api } from '@/convex/_generated/api'
 import { Doc, Id } from '@/convex/_generated/dataModel'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -24,6 +25,7 @@ export function TransactionsPage() {
         currentPage,
         setCurrentPage,
         totalPages,
+        isLoading,
     } = useTransactions()
 
     const deleteTransaction = useMutation(api.transactions.api.handleDeleteTransaction)
@@ -35,7 +37,7 @@ export function TransactionsPage() {
 
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
-            setSelectedTransactions(new Set(paginatedTransactions.map((t: Doc<'transactions'>) => t._id)))
+            setSelectedTransactions(new Set(paginatedTransactions.map((t: Doc<"transactions">) => t._id)))
         } else {
             setSelectedTransactions(new Set())
         }
@@ -74,7 +76,7 @@ export function TransactionsPage() {
     }
 
     const isAllSelected =
-        paginatedTransactions.length > 0 && paginatedTransactions.every((t: Doc<'transactions'>) => selectedTransactions.has(t._id))
+        paginatedTransactions.length > 0 && paginatedTransactions.every((t: Doc<"transactions">) => selectedTransactions.has(t._id))
     const isIndeterminate = selectedTransactions.size > 0 && !isAllSelected
 
     const openEditModal = (transaction: Doc<'transactions'>) => {
@@ -85,6 +87,10 @@ export function TransactionsPage() {
     const openAddModal = () => {
         setEditingTransaction(null)
         setIsModalOpen(true)
+    }
+
+    if (isLoading) {
+        return <TransactionsPageSkeleton />
     }
 
     return (

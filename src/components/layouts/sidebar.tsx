@@ -2,15 +2,6 @@
 
 import * as React from "react"
 import {
-    IconChartBar,
-    IconDashboard,
-    IconFolder,
-    IconInnerShadowTop,
-    IconListDetails,
-    IconTransactionDollar,
-    IconUsers,
-} from "@tabler/icons-react"
-import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
@@ -20,7 +11,6 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { NavMain } from "./nav-main"
-import { useAuth, useUser } from "@clerk/nextjs"
 import { NavUser } from "./nav-user"
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
@@ -42,7 +32,7 @@ const data = {
         },
         {
             title: "Transactions",
-            url: "/transactions",
+            url: "/transaction",
             icon: <FolderKanban className="h-5 w-5" />,
         },
     ],
