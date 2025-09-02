@@ -45,6 +45,7 @@ export function TransactionsTable({
                                         }
                                     }}
                                     aria-label="Select all transactions"
+                                    className="data-[state=checked]:bg-purple-600 mx-2 data-[state=checked]:border-purple-600 data-[state=checked]:text-white"
                                 />
                             </TableHead>
                             <TableHead className="min-w-[100px]">Date</TableHead>
@@ -52,27 +53,38 @@ export function TransactionsTable({
                             <TableHead className="min-w-[120px]">Category</TableHead>
                             <TableHead className="min-w-[200px]">Description</TableHead>
                             <TableHead className="text-right min-w-[100px]">Amount</TableHead>
-                            <TableHead className="text-right min-w-[100px]">Actions</TableHead>
+                            <TableHead className="text-right min-w-[100px]"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {transactions.map((transaction) => (
-                            <TableRow key={transaction._id} className="hover:bg-muted/50">
+                            <TableRow key={transaction._id} className="hover:bg-muted/50 h-13 group">
                                 <TableCell>
                                     <Checkbox
                                         checked={selectedTransactions.has(transaction._id)}
                                         onCheckedChange={(checked) => onSelectTransaction(transaction._id, checked as boolean)}
                                         aria-label={`Select transaction ${transaction.description}`}
+                                        className="data-[state=checked]:bg-purple-600 mx-2 data-[state=checked]:border-purple-600 data-[state=checked]:text-white"
                                     />
                                 </TableCell>
-                                <TableCell className="font-medium">{new Date(transaction.transactionDate).toLocaleDateString()}</TableCell>
+                                <TableCell className="font-medium">
+                                    {new Date(transaction.transactionDate).toLocaleString('en-US', {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true
+                                    })}
+                                </TableCell>
                                 <TableCell>
                                     <Badge
                                         variant={transaction.type === "income" ? "default" : "secondary"}
                                         className={
                                             transaction.type === "income"
-                                                ? "bg-chart-3 text-white hover:bg-chart-3/90"
-                                                : "bg-chart-5 text-white hover:bg-chart-5/90"
+                                                ? "bg-green-500 text-white hover:bg-green-500/90"
+                                                : "bg-red-500 text-white hover:bg-red-500/90"
                                         }
                                     >
                                         {transaction.type}
@@ -81,17 +93,18 @@ export function TransactionsTable({
                                 <TableCell>{transaction.category}</TableCell>
                                 <TableCell className="max-w-xs truncate">{transaction.description}</TableCell>
                                 <TableCell
-                                    className={`text-right font-semibold ${transaction.type === "income" ? "text-chart-3" : "text-chart-5"}`}>
+                                    className={`text-right font-semibold ${transaction.type === "income" ? "text-green-500" : "text-red-500"}`}>
                                     {transaction.type === "income" ? "+" : "-"}
                                     {formatCurrency(transaction.amount)}
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <div className="flex justify-end gap-1">
+                                    {/* Smooth transition */}
+                                    <div className="flex justify-end gap-1 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-in-out">
                                         <Button
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => onEditTransaction(transaction)}
-                                            className="hover:bg-accent/10"
+                                            className="hover:bg-gray-200 hover:scale-110 transition-transform"
                                         >
                                             <Edit className="h-4 w-4" />
                                         </Button>
@@ -99,12 +112,13 @@ export function TransactionsTable({
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => onDeleteTransaction(transaction._id)}
-                                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                            className="text-destructive hover:text-destructive hover:bg-destructive/10 hover:scale-110 transition-transform"
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </Button>
                                     </div>
                                 </TableCell>
+
                             </TableRow>
                         ))}
                     </TableBody>

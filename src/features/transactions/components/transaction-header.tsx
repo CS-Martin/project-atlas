@@ -32,7 +32,7 @@ export function TransactionHeader({
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
                 {selectedTransactions.size > 0 && (
-                    <Button variant="destructive" size="sm" onClick={onBulkDelete} className="flex-1 sm:flex-none">
+                    <Button variant="destructive" onClick={onBulkDelete} className="flex-1 sm:flex-none">
                         <Trash2 className="h-4 w-4 mr-2" />
                         Delete Selected ({selectedTransactions.size})
                     </Button>

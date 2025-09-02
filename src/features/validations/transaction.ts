@@ -6,7 +6,7 @@ export const transactionFormSchema = z.object({
     .number('Amount is required')
     .positive('Amount must be greater than 0')
     .max(1_000_000_000, 'Amount is too large') // cap at 1B
-    .refine((val) => /^\d{1,9}(\.\d{1,2})?$/.test(val.toString()), 'Invalid amount format'),
+    .refine((val) => /^\d*\.?\d+$/.test(val.toString()) && val > 0, 'Invalid amount format'),
   category: z.string().min(1, 'Category is required'),
   description: z.string().min(1, 'Description is required').max(500, 'Description cannot exceed 500 characters'),
   transactionDate: z
@@ -15,8 +15,10 @@ export const transactionFormSchema = z.object({
     .refine((val) => {
       const inputDate = new Date(val);
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // normalize
-      return inputDate <= today;
+      // Set both dates to local time at start of day for accurate comparison
+      const inputDateStart = new Date(inputDate.setHours(0, 0, 0, 0));
+      const todayStart = new Date(today.setHours(0, 0, 0, 0));
+      return inputDateStart <= todayStart;
     }, 'Date cannot be in the future'),
   fileUrl: z.string().optional(),
   createdBy: z.string().optional(),

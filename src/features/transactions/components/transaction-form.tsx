@@ -89,7 +89,10 @@ export function TransactionForm({ onSubmit, transaction, onClose }: TransactionF
                         {...form.register("amount", { valueAsNumber: true })}
                         placeholder="0.00"
                         type="number"
+                        step="any"
                         className="pl-13"
+                        min={0}
+                        max={1_000_000_000}
                     />
                 </div>
                 {form.formState.errors.amount && (

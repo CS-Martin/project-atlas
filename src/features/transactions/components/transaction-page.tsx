@@ -1,59 +1,37 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { useQuery, useMutation } from 'convex/react'
+import { useState } from 'react'
+import { useMutation } from 'convex/react'
+import { useTransactions } from '@/hooks/use-transactions'
 import { TransactionAnalytics } from './transaction-analytics'
 import { TransactionHeader } from './transaction-header'
 import { TransactionFilters } from './transaction-filters'
 import { TransactionsTable } from './transactions-table'
 import { TransactionPagination } from './transaction-pagination'
 import { TransactionModal } from './transaction-modal'
+import { ConfirmationModal } from '@/components/ui/confirmation-modal'
 import { api } from '@/convex/_generated/api'
 import { Doc, Id } from '@/convex/_generated/dataModel'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
-const itemsPerPage = 10
-
 export function TransactionsPage() {
-    const transactionsData = useQuery(api.transactions.api.getAllTransactions)
-    const transactions = useMemo(() => transactionsData || [], [transactionsData])
+    const {
+        transactions,
+        paginatedTransactions,
+        allCategories,
+        filteredTransactions,
+        setFilters,
+        currentPage,
+        setCurrentPage,
+        totalPages,
+    } = useTransactions()
 
     const deleteTransaction = useMutation(api.transactions.api.handleDeleteTransaction)
 
-    const [filters, setFilters] = useState({
-        searchTerm: '',
-        typeFilter: 'all',
-        categoryFilter: 'all',
-    })
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingTransaction, setEditingTransaction] = useState<Doc<"transactions"> | null>(null)
-    const [currentPage, setCurrentPage] = useState(1)
     const [selectedTransactions, setSelectedTransactions] = useState<Set<string>>(new Set())
-
-    const allCategories = useMemo(() => {
-        const categories = new Set(transactions.map((t) => t.category))
-        return Array.from(categories)
-    }, [transactions])
-
-    const filteredTransactions = useMemo(() => {
-        return transactions.filter((transaction) => {
-            const { searchTerm, typeFilter, categoryFilter } = filters
-            const matchesSearch =
-                transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                transaction.category.toLowerCase().includes(searchTerm.toLowerCase())
-            const matchesType = typeFilter === 'all' || transaction.type === typeFilter
-            const matchesCategory = categoryFilter === 'all' || transaction.category === categoryFilter
-
-            return matchesSearch && matchesType && matchesCategory
-        })
-    }, [transactions, filters])
-
-    const paginatedTransactions = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage
-        return filteredTransactions.slice(startIndex, startIndex + itemsPerPage)
-    }, [filteredTransactions, currentPage])
-
-    const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage)
+    const [deleteTarget, setDeleteTarget] = useState<string | 'bulk' | null>(null)
 
     const handleSelectAll = (checked: boolean) => {
         if (checked) {
@@ -73,18 +51,31 @@ export function TransactionsPage() {
         setSelectedTransactions(newSelected)
     }
 
-    const handleBulkDelete = async () => {
-        await Promise.all(Array.from(selectedTransactions).map((id) => deleteTransaction({ transactionId: id as Id<"transactions"> })))
-        setSelectedTransactions(new Set())
+    const onConfirmDelete = async () => {
+        if (deleteTarget === 'bulk') {
+            await Promise.all(
+                Array.from(selectedTransactions).map((id) =>
+                    deleteTransaction({ transactionId: id as Id<"transactions"> })
+                )
+            )
+            setSelectedTransactions(new Set())
+        } else if (deleteTarget) {
+            await deleteTransaction({ transactionId: deleteTarget as Id<"transactions"> })
+        }
+        setDeleteTarget(null)
+    }
+
+    const handleDeleteRequest = (id: string) => {
+        setDeleteTarget(id)
+    }
+
+    const handleBulkDeleteRequest = () => {
+        setDeleteTarget('bulk')
     }
 
     const isAllSelected =
         paginatedTransactions.length > 0 && paginatedTransactions.every((t) => selectedTransactions.has(t._id))
     const isIndeterminate = selectedTransactions.size > 0 && !isAllSelected
-
-    const handleDeleteTransaction = async (id: string) => {
-        await deleteTransaction({ transactionId: id as Id<"transactions"> })
-    }
 
     const openEditModal = (transaction: Doc<"transactions">) => {
         setEditingTransaction(transaction)
@@ -105,7 +96,7 @@ export function TransactionsPage() {
                     <TransactionHeader
                         selectedTransactions={selectedTransactions}
                         onAddTransaction={openAddModal}
-                        onBulkDelete={handleBulkDelete}
+                        onBulkDelete={handleBulkDeleteRequest}
                         filteredTransactionCount={filteredTransactions.length}
                         totalTransactionCount={transactions.length}
                     />
@@ -119,7 +110,7 @@ export function TransactionsPage() {
                         onSelectAll={handleSelectAll}
                         onSelectTransaction={handleSelectTransaction}
                         onEditTransaction={openEditModal}
-                        onDeleteTransaction={handleDeleteTransaction}
+                        onDeleteTransaction={handleDeleteRequest}
                         isAllSelected={isAllSelected}
                         isIndeterminate={isIndeterminate}
                     />
@@ -139,6 +130,14 @@ export function TransactionsPage() {
                     setEditingTransaction(null)
                 }}
                 transaction={editingTransaction}
+            />
+
+            <ConfirmationModal
+                isOpen={deleteTarget !== null}
+                onClose={() => setDeleteTarget(null)}
+                onConfirm={onConfirmDelete}
+                title="Are you absolutely sure?"
+                description="This action cannot be undone. This will permanently delete the selected transaction(s)."
             />
         </>
     )
