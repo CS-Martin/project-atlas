@@ -10,6 +10,8 @@ import {
   createTransactionArgs,
   updateTransactionArgs,
   deleteTransactionArgs,
+  getDashboardDataArgs,
+  getDashboardDataHandler,
 } from './index';
 
 // Getter methods
@@ -21,6 +23,11 @@ export const getAllTransactions = query({
 export const getTransactionById = query({
   args: getTransactionByIdArgs,
   handler: getTransactionByIdHandler,
+});
+
+export const getDashboardData = query({
+  args: getDashboardDataArgs,
+  handler: getDashboardDataHandler,
 });
 
 // Mutations

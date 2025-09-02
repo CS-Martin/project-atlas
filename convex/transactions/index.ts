@@ -6,3 +6,4 @@ export * from './mutations/handleDeleteTransaction';
 // Getters
 export * from './queries/getTransactionById';
 export * from './queries/getAllTransactions';
+export * from './queries/getDashboardData';
