@@ -53,7 +53,7 @@ export function Combobox({ options, value, onChange, creatable }: ComboboxProps)
                                     setOpen(false)
                                 }}
                             >
-                                Create "{searchTerm}"
+                                Create &quot;{searchTerm}&quot;
                             </CommandItem>
                         ) : (
                             "No option found."

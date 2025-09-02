@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Doc } from "@/convex/_generated/dataModel"
 import { motion } from "framer-motion"
-import { ArrowDownCircle, ArrowUpCircle, Wallet, Receipt } from "lucide-react"
+import { TrendingUp, TrendingDown, BanknoteArrowUp, FolderKanban } from "lucide-react"
 import { NumberTicker } from "@/components/magicui/number-ticker"
 
 interface TransactionAnalyticsProps {
@@ -27,28 +27,28 @@ export function TransactionAnalytics({ transactions }: TransactionAnalyticsProps
             value: totalIncome,
             sign: "+",
             color: "text-green-500",
-            icon: <ArrowUpCircle className="h-6 w-6 text-green-500" />,
+            icon: <TrendingUp className="h-6 w-6 text-green-500" />,
         },
         {
             title: "Total Expenses",
             value: totalExpenses,
             sign: "-",
             color: "text-red-500",
-            icon: <ArrowDownCircle className="h-6 w-6 text-red-500" />,
+            icon: <TrendingDown className="h-6 w-6 text-red-500" />,
         },
         {
             title: "Net Flow",
             value: Math.abs(netFlow),
             sign: netFlow >= 0 ? "+" : "-",
             color: netFlow >= 0 ? "text-green-500" : "text-red-500",
-            icon: <Wallet className={`h-6 w-6 ${netFlow >= 0 ? "text-green-500" : "text-red-500"}`} />,
+            icon: <BanknoteArrowUp className={`h-6 w-6 ${netFlow >= 0 ? "text-green-500" : "text-red-500"}`} />,
         },
         {
             title: "Total Transactions",
             value: transactions.length,
             sign: "",
             color: "text-black",
-            icon: <Receipt className="h-6 w-6 text-blue-500" />,
+            icon: <FolderKanban className="h-6 w-6 text-blue-500" />,
         },
     ]
 

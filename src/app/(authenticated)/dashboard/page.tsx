@@ -3,7 +3,7 @@ export default function DashboardPage() {
     return (
         <div>
             <div>
-                hey
+                Coming soon!
             </div>
         </div>
     )
