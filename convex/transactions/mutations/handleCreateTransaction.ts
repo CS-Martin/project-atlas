@@ -1,7 +1,7 @@
 import { MutationCtx } from '@/convex/_generated/server';
-import { v } from 'convex/values';
+import { Infer, v } from 'convex/values';
 
-export const createTransactionHandlerArgs = {
+export const createTransactionArgs = v.object({
   type: v.union(v.literal('income'), v.literal('expense')),
   amount: v.number(),
   category: v.string(),
@@ -9,20 +9,9 @@ export const createTransactionHandlerArgs = {
   transactionDate: v.string(),
   fileUrl: v.string(),
   createdBy: v.string(),
-};
+});
 
-export const createTransactionHandler = async (
-  ctx: MutationCtx,
-  args: {
-    type: 'income' | 'expense';
-    amount: number;
-    category: string;
-    description: string;
-    transactionDate: string;
-    fileUrl: string;
-    createdBy: string;
-  }
-) => {
+export const createTransactionHandler = async (ctx: MutationCtx, args: Infer<typeof createTransactionArgs>) => {
   const { type, amount, category, description, transactionDate, fileUrl, createdBy } = args;
 
   try {

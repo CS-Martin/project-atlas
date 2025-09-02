@@ -1,12 +1,11 @@
-import { Id } from '@/convex/_generated/dataModel';
 import { QueryCtx } from '@/convex/_generated/server';
-import { v } from 'convex/values';
+import { Infer, v } from 'convex/values';
 
-export const getTransactionByIdHandlerArgs = {
+export const getTransactionByIdArgs = v.object({
   transactionId: v.id('transactions'),
-};
+});
 
-export const getTransactionByIdHandler = async (ctx: QueryCtx, args: { transactionId: Id<'transactions'> }) => {
+export const getTransactionByIdHandler = async (ctx: QueryCtx, args: Infer<typeof getTransactionByIdArgs>) => {
   const { transactionId } = args;
 
   try {

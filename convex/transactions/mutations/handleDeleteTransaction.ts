@@ -1,15 +1,11 @@
-import { Id } from '@/convex/_generated/dataModel';
 import { MutationCtx } from '@/convex/_generated/server';
-import { v } from 'convex/values';
+import { Infer, v } from 'convex/values';
 
-export const deleteTransactionHandlerArgs = {
+export const deleteTransactionArgs = v.object({
   transactionId: v.id('transactions'),
-};
+});
 
-export const deleteTransactionHandlerHandler = async (
-  ctx: MutationCtx,
-  args: { transactionId: Id<'transactions'> }
-) => {
+export const deleteTransactionHandlerHandler = async (ctx: MutationCtx, args: Infer<typeof deleteTransactionArgs>) => {
   const { transactionId } = args;
 
   try {

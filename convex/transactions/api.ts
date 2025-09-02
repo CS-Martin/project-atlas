@@ -1,38 +1,40 @@
-import { internalMutation, mutation, query } from '../_generated/server';
+import { mutation, query } from '../_generated/server';
 import {
   createTransactionHandler,
-  createTransactionHandlerArgs,
-  deleteTransactionHandlerArgs,
   deleteTransactionHandlerHandler,
   getAllTransactionsHandler,
   getTransactionByIdHandler,
-  getTransactionByIdHandlerArgs,
   updateTransactionHandler,
-  updateTransactionHandlerArgs,
+  getAllTransactionsArgs,
+  getTransactionByIdArgs,
+  createTransactionArgs,
+  updateTransactionArgs,
+  deleteTransactionArgs,
 } from './index';
 
 // Getter methods
 export const getAllTransactions = query({
+  args: getAllTransactionsArgs,
   handler: getAllTransactionsHandler,
 });
 
 export const getTransactionById = query({
-  args: getTransactionByIdHandlerArgs,
+  args: getTransactionByIdArgs,
   handler: getTransactionByIdHandler,
 });
 
 // Mutations
 export const handleCreateTransaction = mutation({
-  args: createTransactionHandlerArgs,
+  args: createTransactionArgs,
   handler: createTransactionHandler,
 });
 
 export const handleUpdateTransaction = mutation({
-  args: updateTransactionHandlerArgs,
+  args: updateTransactionArgs,
   handler: updateTransactionHandler,
 });
 
 export const handleDeleteTransaction = mutation({
-  args: deleteTransactionHandlerArgs,
+  args: deleteTransactionArgs,
   handler: deleteTransactionHandlerHandler,
 });
