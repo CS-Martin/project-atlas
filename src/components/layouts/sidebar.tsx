@@ -18,6 +18,7 @@ import Image from "next/image"
 import { useTheme } from "next-themes"
 import { FolderKanban, LayoutDashboard } from "lucide-react"
 import { Label } from "../ui/label"
+import { useUser } from "@clerk/nextjs"
 
 const data = {
     user: {
@@ -42,7 +43,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { theme } = useTheme()
-    const user = useQuery(api.users.api.getCurrentAuthenticatedUser)
+    const { user } = useUser()
 
     if (!user) {
         return null
