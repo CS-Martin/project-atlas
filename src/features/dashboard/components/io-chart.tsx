@@ -30,16 +30,17 @@ export function IOChart() {
     return <Skeleton className="h-96" />;
   }
 
-  const { chartData, totalIncome, totalExpense } = dashboardData;
+  const { chartData } = dashboardData;
 
+  // Purple color scheme
   const chartConfig = {
     income: {
       label: 'Income',
-      color: '#4caf50',
+      color: '#5B2C6F', // dark purple
     },
     expense: {
       label: 'Expense',
-      color: '#f44336',
+      color: '#D7BDE2', // light purple
     },
   };
 
@@ -80,8 +81,8 @@ export function IOChart() {
               formatter={(value: number) => `$${value.toLocaleString()}`}
               content={<ChartTooltipContent />}
             />
-            <Bar dataKey="income" fill="var(--color-income)" radius={4} />
-            <Bar dataKey="expense" fill="var(--color-expense)" radius={4} />
+            <Bar dataKey="income" fill={chartConfig.income.color} radius={4} />
+            <Bar dataKey="expense" fill={chartConfig.expense.color} radius={4} />
           </BarChart>
         </ChartContainer>
       </CardContent>

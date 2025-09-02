@@ -2,6 +2,7 @@
 import { DateFilter } from '@/features/dashboard/components/date-filter';
 import { AnalyticsGrid } from '@/features/dashboard/components/analytics-grid';
 import { IOChart } from '@/features/dashboard/components/io-chart';
+import { ExpensePieChart } from '@/features/dashboard/components/expense-pie-chart';
 
 export default function DashboardPage() {
   return (
@@ -11,7 +12,10 @@ export default function DashboardPage() {
         <DateFilter />
       </div>
       <AnalyticsGrid />
-      <IOChart />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <IOChart />
+        <ExpensePieChart />
+      </div>
     </div>
   );
 }

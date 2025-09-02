@@ -64,7 +64,7 @@ export const getDashboardDataHandler = async (ctx: QueryCtx, args: Infer<typeof 
     income,
     expense,
     netBalance,
-    topExpenseCategory,
+    expenseByCategory,
     chartData: Object.values(chartData).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
   };
 };
