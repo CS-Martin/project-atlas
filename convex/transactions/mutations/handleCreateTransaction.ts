@@ -37,6 +37,8 @@ export const createTransactionHandler = async (
       transactionDate,
       fileUrl,
       createdBy,
+      editedBy: createdBy,
+      updatedAt: new Date().toISOString(),
     });
 
     console.log('Transaction created successfully:', transactionId);

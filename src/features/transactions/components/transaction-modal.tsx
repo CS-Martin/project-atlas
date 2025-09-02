@@ -4,8 +4,10 @@ import { useQuery, useMutation } from "convex/react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { TransactionForm } from "./transaction-form"
 import { api } from "@/convex/_generated/api"
-import { Doc } from "@//convex/_generated/dataModel"
+import { Doc, Id } from "@/convex/_generated/dataModel"
 import { TransactionFormValues } from "@/features/validations/transaction"
+import { useProgress } from "@bprogress/next"
+import { toast } from "sonner"
 
 interface TransactionModalProps {
     isOpen: boolean
@@ -14,22 +16,36 @@ interface TransactionModalProps {
 }
 
 export function TransactionModal({ isOpen, onClose, transaction }: TransactionModalProps) {
+    const { start, stop } = useProgress()
     const user = useQuery(api.users.api.getCurrentAuthenticatedUser)
 
     const createTransaction = useMutation(api.transactions.api.handleCreateTransaction)
     const updateTransaction = useMutation(api.transactions.api.handleUpdateTransaction)
 
-    const handleAddTransaction = async (values: TransactionFormValues) => {
-        if (!user) return
+    const handleCreateTransaction = async (values: TransactionFormValues) => {
+        try {
+            start()
+            if (!user) return
 
-        const transactionData = {
-            ...values,
-            fileUrl: "",
-            createdBy: user._id
+            const transactionData = {
+                ...values,
+                fileUrl: "",
+                createdBy: user._id
+            }
+
+            const transactionId = await createTransaction(transactionData)
+
+            if (transactionId) {
+                onClose()
+                toast.success("Transaction added successfully")
+            }
+        } catch (error) {
+            console.error("Error adding transaction:", error)
+
+            toast.error("Failed to add transaction")
+        } finally {
+            stop()
         }
-
-        await createTransaction(transactionData)
-        onClose()
     }
 
     const handleEditTransaction = async (values: TransactionFormValues) => {
@@ -37,9 +53,11 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
             const transactionData = {
                 ...values,
                 _id: transaction._id,
-                fileUrl: "",
-                createdBy: transaction.createdBy
+                fileUrl: transaction.fileUrl || "",
+                editedBy: user?._id ?? "",
+                updatedAt: new Date().toISOString()
             }
+
             await updateTransaction({ ...transactionData, transactionId: transaction._id })
             onClose()
         }
@@ -58,7 +76,7 @@ export function TransactionModal({ isOpen, onClose, transaction }: TransactionMo
                 </DialogHeader>
                 <TransactionForm
                     onClose={onClose}
-                    onSubmit={transaction ? handleEditTransaction : handleAddTransaction}
+                    onSubmit={transaction ? handleEditTransaction : handleCreateTransaction}
                     transaction={transaction}
                 />
             </DialogContent>

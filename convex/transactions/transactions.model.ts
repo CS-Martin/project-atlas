@@ -9,6 +9,8 @@ export const transactions = defineTable({
   transactionDate: v.string(),
   fileUrl: v.string(),
   createdBy: v.string(),
+  editedBy: v.string(),
+  updatedAt: v.string(),
 })
   .index('by_createdBy', ['createdBy'])
   .index('by_type', ['type']);

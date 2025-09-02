@@ -20,6 +20,8 @@ export const transactionFormSchema = z.object({
     }, 'Date cannot be in the future'),
   fileUrl: z.string().optional(),
   createdBy: z.string().optional(),
+  editedBy: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 export type TransactionFormValues = z.infer<typeof transactionFormSchema>;
